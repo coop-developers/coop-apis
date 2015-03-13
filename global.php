@@ -63,10 +63,14 @@ function user_load($user_id) {
     if (!$user_info) {
         return false;
     }
+    user_prepare($user_info);
+    return $user_info;
+}
+
+function user_prepare($user_info) {
     $user_info['permissions'] = json_decode($user_info['permissions'], true);
     unset($user_info['user_id']);
     unset($user_info['password_hash']);
-    return $user_info;
 }
 
 function user_check_authenticated() {
