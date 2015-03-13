@@ -60,6 +60,9 @@ function user_load($user_id) {
         users.id = user_profiles.user_id WHERE users.id = ?');
     $query->execute(array($user_id));
     $user_info = $query->fetch(PDO::FETCH_ASSOC);
+    if (!$user_info) {
+        return false;
+    }
     $user_info['permissions'] = json_decode($user_info['permissions'], true);
     unset($user_info['user_id']);
     unset($user_info['password_hash']);
@@ -131,6 +134,13 @@ function table_update_keys($table, $primary_key, $primary_key_value, $valid_keys
     $query = get_db_session()->prepare($query);
     $query->execute($values);
     return $query;
+}
+
+function dict_get($dict, $key, $default=null) {
+    if (isset($dict[$key])) {
+        return $dict[$key];
+    }
+    return $default;
 }
 
 # Ensure this file does not get served
