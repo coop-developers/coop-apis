@@ -74,7 +74,7 @@ if (isset($_GET['id'])) {
     $users->execute();
 
     $results = array();
-    for ($users as $user) {
+    foreach ($users as $user) {
         user_prepare($user);
         $results[] = $user;
     }
