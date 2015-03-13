@@ -67,7 +67,7 @@ function user_load($user_id) {
     return $user_info;
 }
 
-function user_prepare($user_info) {
+function user_prepare(&$user_info) {
     $user_info['permissions'] = json_decode($user_info['permissions'], true);
     unset($user_info['user_id']);
     unset($user_info['password_hash']);
@@ -140,7 +140,7 @@ function table_update_keys($table, $primary_key, $primary_key_value, $valid_keys
     return $query;
 }
 
-function dict_get($dict, $key, $default=null) {
+function dict_get(&$dict, $key, $default=null) {
     if (isset($dict[$key])) {
         return $dict[$key];
     }
