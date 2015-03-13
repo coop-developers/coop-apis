@@ -62,4 +62,10 @@ if (isset($_GET['id'])) {
     }
 
     send_json_response($user_info);
+} else {
+    if (!dict_get($current_user_info, 'user_admin', false)) {
+        header('HTTP/1.1 403 Access Denied');
+        send_json_response(array('message' => 'You don not have permissions to view all users'));
+        exit(0);
+    }
 }
