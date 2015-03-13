@@ -28,7 +28,7 @@ if (isset($_GET['id'])) {
     }
 
     if ($requested_user_id != $current_user_info['id']) {
-        if (!dict_get($current_user_info, 'user_admin', false)) {
+        if (!dict_get($current_user_info['permissions'], 'user_admin', false)) {
             header('HTTP/1.1 403 Access Denied');
             send_json_response(array('message' => "You don not have permissions to access this user's information"));
             exit(0);
@@ -63,7 +63,7 @@ if (isset($_GET['id'])) {
 
     send_json_response($user_info);
 } else {
-    if (!dict_get($current_user_info, 'user_admin', false)) {
+    if (!dict_get($current_user_info['permissions'], 'user_admin', false)) {
         header('HTTP/1.1 403 Access Denied');
         send_json_response(array('message' => 'You don not have permissions to view all users'));
         exit(0);
