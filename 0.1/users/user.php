@@ -68,4 +68,15 @@ if (isset($_GET['id'])) {
         send_json_response(array('message' => 'You don not have permissions to view all users'));
         exit(0);
     }
+
+    $users = get_db_session()->prepare('SELECT * FROM users LEFT JOIN user_profiles ON users.id = user_profiles.user_id');
+    $users->setFetchMode(PDO::FETCH_ASSOC);
+    $users->execute();
+
+    $results = array();
+    for ($users as $user) {
+        user_prepare($user);
+        $results[] = $user;
+    }
+    send_json_response($results);
 }
