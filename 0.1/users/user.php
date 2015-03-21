@@ -53,12 +53,21 @@ if (isset($_GET['id'])) {
                 send_json_response(array('message' => 'invalid password', 'data'=>$request));
                 exit(0);
             }
+        } else {
+            table_update_keys('user_profiles', 'user_id', $user_info['id'], array('suite', 'lease_period'), $request, true);
+            table_update_keys('users', 'id', $user_info['id'], array('full_name'), $request);
+            if(dict_get($current_user_info['permissions'], 'user_admin', false)) {
+                $new_perms = dict_get($request, 'permissions', NULL);
+                $new_perms_data = json_encode($new_perms);
+                if (is_null($new_perms)) {
+                    $new_perms_data = '';
+                }
+                $query = get_db_session()->prepare('UPDATE users SET permissions = ? WHERE id = ?');
+                $query->execute(array($new_perms_data, $user_info['id']));
+            }
+
+            $user_info = user_load($user_info['id']);
         }
-
-        table_update_keys('user_profiles', 'user_id', $user_info['id'], array('suite', 'lease_period'), $request, true);
-        table_update_keys('users', 'id', $user_info['id'], array('full_name'), $request);
-
-        $user_info = user_load($user_info['id']);
     }
 
     send_json_response($user_info);
