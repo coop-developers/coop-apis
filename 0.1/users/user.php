@@ -39,6 +39,11 @@ function _update_user_permissions($user_id, $new_perms) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_SESSION['user_id'])) {
+        header('HTTP/1.1 400 Invalid Request');
+        send_json_response(array('message' => "You cannot create new accounts while logged in"));
+        exit(0);
+    }
     $request = get_json_body();
     $new_user_id = _create_stub_user($request['email'], $request['password']);
     $_SESSION['user_id'] = $id;
