@@ -52,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $current_user_info = user_load_current();
     if (!isset($_GET['id']) && $_SERVER['REQUEST_METHOD'] == 'PUT') {
         header('HTTP/1.1 400 Invalid Request (must provide id)');
+        send_json_response(array('message' => 'You must provide a user id when modifying users'));
         exit(0);
     }
 
@@ -64,16 +65,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($user_id != $current_user_info['id']) {
             if (!dict_get($current_user_info['permissions'], 'user_admin', false)) {
                 header('HTTP/1.1 403 Access Denied');
+                send_json_response(array('message' => 'You don not have permissions to view other users'));
                 exit(0);
             }
         }
 
         if (!user_load($user_id)) {
             header('HTTP/1.1 404 Not Found');
+            send_json_response(array('message' => 'User not found'));
             exit(0);
         }
 
         if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
+            $request = get_json_body();
             if (!dict_get($current_user_info['permissions'], 'user_admin', false) &&
                     isset($request['permissions'])) {
                 unset($request['permissions']);
@@ -114,5 +118,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 } else {
     header('HTTP/1.1 405 Method Not Allowed');
+    send_json_response(array('message' => 'method not allowed'));
     exit(0);
 }
