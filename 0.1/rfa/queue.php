@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     $query = get_db_session()->prepare("SELECT * FROM rfa_queue WHERE ($filter)");
     $query->setFetchMode(PDO::FETCH_ASSOC);
-    $query.execute($filt_data);
+    $query->execute($filt_data);
     send_json_response($query->fetchAll());
 } else {
     header('HTTP/1.1 405 Invalid Method');
