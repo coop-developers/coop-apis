@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     _update_user($id, $request);
 
     send_json_response(user_load($id));
-} else if ($_SERVER['REQUEST_METHOD'] == 'PUT' && $_SERVER['REQUEST_METHOD'] == 'GET') {
+} else if ($_SERVER['REQUEST_METHOD'] == 'PUT' || $_SERVER['REQUEST_METHOD'] == 'GET') {
     user_check_authenticated();
 
     $current_user_info = user_load_current();
