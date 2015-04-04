@@ -46,11 +46,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     $request = get_json_body();
     $new_user_id = _create_stub_user($request['email'], $request['password']);
-    $_SESSION['user_id'] = $id;
+    $_SESSION['user_id'] = $new_user_id;
     user_check_authenticated();
-    _update_user($id, $request);
+    _update_user($new_user_id, $request);
 
-    send_json_response(user_load($id));
+    send_json_response(user_load($new_user_id));
 } else if ($_SERVER['REQUEST_METHOD'] == 'PUT' || $_SERVER['REQUEST_METHOD'] == 'GET') {
     user_check_authenticated();
 
