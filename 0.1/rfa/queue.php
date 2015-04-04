@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $filter = implode(' AND ', $filt_columns);
     if (!$filter) $filter = '1';
 
-    $query = get_db_session()->prepare("SELECT * FROM rfa_queue WHERE ($filter)");
+    $query = get_db_session()->prepare("SELECT rfa_queue.*, users.full_name FROM rfa_queue INNER JOIN users ON rfa_queue.user_id = users.id WHERE ($filter) ");
     $query->setFetchMode(PDO::FETCH_ASSOC);
     $query->execute($filt_data);
     send_json_response($query->fetchAll());
