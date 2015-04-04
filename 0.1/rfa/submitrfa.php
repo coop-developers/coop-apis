@@ -38,6 +38,9 @@ $request = 	get_json_body();
 		$query->bindParam(':description', $request['descrip']);
 	    //$query->setFetchMode(PDO::FETCH_ASSOC);
 	    $query->execute();
+
+        $query = get_db_session()->prepare('INSERT INTO rfa_comments(rfa_id, user_id, time, comment) VALUES (LAST_INSERT_ID(), ?, now(), ?)');
+        $query->execute(array($username, $request['comments']));
 	}else{
 		header('HTTP/1.1 400 Bad Request');
 	}
