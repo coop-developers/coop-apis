@@ -147,6 +147,10 @@ function dict_get(&$dict, $key, $default=null) {
     return $default;
 }
 
+function format_iso8601($datetime) {
+        return date("Y-m-d\TH:i:sO",strtotime($datetime));
+}
+
 # Ensure this file does not get served
 if (basename($_SERVER['SCRIPT_NAME']) == 'global.php') {
     header('HTTP/1.1 403 Forbidden');
