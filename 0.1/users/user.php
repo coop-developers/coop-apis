@@ -121,6 +121,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         send_json_response($results);
     }
+} else if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
+    user_check_authenticated();
+
+    $current_user_info = user_load_current();
+    if (!isset($_GET['id'])) {
+        header('HTTP/1.1 400 Invalid Request (must provide id)');
+        send_json_response(array('message' => 'You must provide a user id when deleting users'));
+        exit(0);
+    }
+
+    if (!dict_get($current_user_info['permissions'], 'user_admin', false)) {
+        header('HTTP/1.1 403 Access Denied');
+        send_json_response(array('message' => 'You don not have permissions to delete other users'));
+        exit(0);
+    }
+
+    validate_csrf();
+    $user_id = (int) $_GET['id'];
+    $confirm_email = $_SERVER['HTTP_X_CONFIRM_EMAIL'];
+    $user_data = user_load($user_id);
+
+    if (!$user_data) {
+        header('HTTP/1.1 404 Not Found');
+        send_json_response(array('message' => 'User not found'));
+        exit(0);
+    }
+
+    if ($confirm_email != $user_data['email']) {
+        header('HTTP/1.1 400 Email confirmation failed');
+        send_json_response(array('message' => 'Confirmation email incorrect'));
+        exit(0);
+    }
+
+    $query = get_db_session()->prepare('DELETE FROM users WHERE id = ? AND email = ?');
+    $query->execute(array($user_id, $confirm_email));
+    header('HTTP/1.1 204 No Content');
 } else {
     header('HTTP/1.1 405 Method Not Allowed');
     send_json_response(array('message' => 'method not allowed'));
